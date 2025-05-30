@@ -26,10 +26,11 @@ class _MetroCsvViewerState extends State<MetroCsvViewer> {
     // Implement your CSV fetching and parsing logic here
     // For example, you can use the http package to fetch the CSV file
     // and then parse it using a CSV parser like csv or csv_parser.
-    final apiUrl = 'https://data.taipei/api/v1/dataset/df2da2b6-a3d5-47e7-8c97-8b047d9a2bd1?scope=resourceAquire';
+    final apiUrl = 'https://data.taipei/api/v1/dataset/df2da2b6-a3d5-47e7-8c97-8b047d9a2bd1?scope=resourceAquire&resource_id=eb481f58-1238-4cff-8caa-fa7bb20cb4f4';
     final apiResponse = await http.get(Uri.parse(apiUrl));
 
     if(apiResponse.statusCode == 200){
+      debugPrint('API 請求成功: ${apiResponse.statusCode}');
       final data = jsonDecode(apiResponse.body);
       final results = data['result']['results'] as List<dynamic>;
 
@@ -37,7 +38,7 @@ class _MetroCsvViewerState extends State<MetroCsvViewer> {
       allFiles = results.map((e) => MetroData.fromJson(e)).toList();
 
       final target = allFiles.firstWhere(
-        (e) => e.year == "2016" && e.month == "7" , 
+        (e) => e.year == "2015" && e.month == "1" , 
         orElse: () => throw Exception("找不到符合條件的資料")
       );
 
