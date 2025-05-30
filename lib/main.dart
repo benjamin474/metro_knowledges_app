@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:taipei_metro_app/metro_travel_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'signin_page.dart';
 
 Future<void> main() async {
   await dotenv.load();
@@ -14,9 +13,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Metro Travel Demo',
-      theme: ThemeData(useMaterial3: true),
-      home: const MetroTravelPage(), // 正確入口頁
+      title: '登入系統',
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      home: const SignInPage(),
     );
   }
 }
