@@ -3,7 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'signin_page.dart';
 
 Future<void> main() async {
-  await dotenv.load();
+  await dotenv.load(fileName: 'assets/.env');
   runApp(const MyApp());
 }
 
