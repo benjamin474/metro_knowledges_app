@@ -82,7 +82,10 @@ class _SignInPageState extends State<SignInPage> {
     final url = Uri.parse('https://favqs.com/api/users/forgot_password');
     final response = await http.post(
       url,
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Token token="$favKey"',
+        },
       body: jsonEncode({
         'user': {'email': email},
       }),
