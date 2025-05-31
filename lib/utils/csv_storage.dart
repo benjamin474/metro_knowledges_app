@@ -41,4 +41,40 @@ class CsvStorage {
     final data = await loadData();
     await saveData(data['account'], data['nickname'], []);
   }
+
+  static Future<bool> getThemePreference() async {
+    try {
+      final file = await _getFile();
+      if (!await file.exists()) {
+        return false; // Default to light mode if no preference is saved
+      }
+      final csvString = await file.readAsString();
+      final csvData = const CsvToListConverter().convert(csvString);
+      if (csvData.length > 2 && csvData[2].isNotEmpty) {
+        return csvData[2][0] == 'dark';
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static Future<void> saveThemePreference(bool isDarkMode) async {
+    try {
+      final file = await _getFile();
+      final csvString = await file.readAsString();
+      final csvData = const CsvToListConverter().convert(csvString);
+
+      if (csvData.length > 2) {
+        csvData[2] = [isDarkMode ? 'dark' : 'light'];
+      } else {
+        csvData.add([isDarkMode ? 'dark' : 'light']);
+      }
+
+      final updatedCsvString = const ListToCsvConverter().convert(csvData);
+      await file.writeAsString(updatedCsvString);
+    } catch (e) {
+      // Handle error if needed
+    }
+  }
 }

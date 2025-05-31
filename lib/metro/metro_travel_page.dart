@@ -95,6 +95,15 @@ class _MetroTravelPageState extends State<MetroTravelPage> {
     });
   }
 
+  // 新增排序功能
+  void sortTravelList(bool ascending) {
+    setState(() {
+      filteredList.sort((a, b) => ascending
+          ? a.runTime.compareTo(b.runTime)
+          : b.runTime.compareTo(a.runTime));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -174,6 +183,21 @@ class _MetroTravelPageState extends State<MetroTravelPage> {
                             ),
                             onChanged: (value) => filterResults(),
                           ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    // Sorting buttons
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () => sortTravelList(true),
+                          child: const Text('時間最短升序'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => sortTravelList(false),
+                          child: const Text('時間最長降序'),
                         ),
                       ],
                     ),
