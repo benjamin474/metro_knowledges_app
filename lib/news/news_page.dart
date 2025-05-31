@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
-import 'tdx_auth.dart';
-import 'models/news_model.dart';
+import '../tdx_auth.dart';
+import '../models/news_model.dart';
 
 class NewsPage extends StatefulWidget {
   const NewsPage({super.key});

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:taipei_metro_app/models/travel_time_model.dart';
-import 'tdx_auth.dart'; // 引用你放 TdxAuth 的檔案
-import 'models/travel_time_model.dart'; // 引用 model
+import '../tdx_auth.dart'; // 引用你放 TdxAuth 的檔案
+import '../models/travel_time_model.dart'; // 引用 model
 import 'package:taipei_metro_app/utils/csv_storage.dart';
 
 class MetroTravelPage extends StatefulWidget {
