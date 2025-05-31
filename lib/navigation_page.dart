@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:taipei_metro_app/signin_page.dart';
+import 'package:taipei_metro_app/account/signin_page.dart';
 import 'metro_travel_page.dart';
+import 'news_page.dart';
+import 'account/settings_page.dart';
 
 class NavigationPage extends StatefulWidget {
   final String userToken;
@@ -32,6 +34,16 @@ class _NavigationPageState extends State<NavigationPage> {
           title: const Text('導覽頁面'),
           actions: [
             IconButton(
+              icon: const Icon(Icons.settings),
+              tooltip: '設定',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const SettingsPage()),
+                );
+              },
+            ),
+            IconButton(
               icon: const Icon(Icons.logout),
               onPressed: () {
                 Navigator.pushReplacement(
@@ -42,9 +54,40 @@ class _NavigationPageState extends State<NavigationPage> {
             ),
           ],
         ),
-        body: MetroTravelPage(
-          onToggleTheme: _toggleTheme,
-          themeMode: _themeMode,
+        body: SafeArea(
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.article),
+                  tooltip: '最新新聞',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const NewsPage()),
+                    );
+                  },
+                ),
+                const SizedBox(width: 32),
+                IconButton(
+                  icon: const Icon(Icons.train),
+                  tooltip: '行車查詢',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => MetroTravelPage(
+                          onToggleTheme: _toggleTheme,
+                          themeMode: _themeMode,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

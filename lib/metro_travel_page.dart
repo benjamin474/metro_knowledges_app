@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:taipei_metro_app/travel_time_model.dart';
+import 'package:taipei_metro_app/models/travel_time_model.dart';
 import 'tdx_auth.dart'; // 引用你放 TdxAuth 的檔案
-import 'travel_time_model.dart'; // 引用 model
+import 'models/travel_time_model.dart'; // 引用 model
+import 'package:taipei_metro_app/utils/csv_storage.dart';
 
 class MetroTravelPage extends StatefulWidget {
   const MetroTravelPage({
@@ -77,8 +78,15 @@ class _MetroTravelPageState extends State<MetroTravelPage> {
   }
 
   // 使用單一搜尋條件過濾
-  void filterResults() {
-    final query = searchController.text.toLowerCase();
+  Future<void> filterResults() async {
+    final query = searchController.text.trim().toLowerCase();
+    if (query.isNotEmpty) {
+      // 儲存搜尋歷史到 CSV
+      final data = await CsvStorage.loadData();
+      final history = data['history'] as List<String>;
+      history.add(query);
+      await CsvStorage.saveData(data['account'], data['nickname'], history);
+    }
     setState(() {
       filteredList = travelList.where((t) {
         return t.fromStation.toLowerCase().contains(query) ||

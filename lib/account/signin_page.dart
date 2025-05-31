@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:taipei_metro_app/account/signup_page.dart';
 import '../../navigation_page.dart'; // 導覽頁面
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../utils/csv_storage.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -49,6 +50,8 @@ class _SignInPageState extends State<SignInPage> {
         } else {
           // 登入成功，取得 token
           final userToken = data['User-Token'];
+          // 儲存使用者帳號到 CSV
+          await CsvStorage.saveData(loginController.text, '', []);
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
