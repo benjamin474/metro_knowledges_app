@@ -41,18 +41,26 @@ class _SignInPageState extends State<SignInPage> {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final userToken = data['User-Token'];
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => NavigationPage(userToken: userToken),
-          ),
-        );
+        if (data.containsKey('error_code')) {
+          // 登入失敗，顯示錯誤訊息
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('登入失敗: ${data['message']}')),
+          );
+        } else {
+          // 登入成功，取得 token
+          final userToken = data['User-Token'];
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NavigationPage(userToken: userToken),
+            ),
+          );
+        }
       } else {
-        final error = jsonDecode(response.body);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('登入失敗: ${error['message']}')));
+        // 非預期的 HTTP 回應
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('登入失敗: HTTP ${response.statusCode}')),
+        );
       }
     } catch (e) {
       setState(() => isLoading = false);

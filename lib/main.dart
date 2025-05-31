@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: '登入系統',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
