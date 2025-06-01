@@ -6,6 +6,7 @@ import 'metro/metro_travel_page.dart';
 import 'news/news_page.dart';
 import 'account/settings_page.dart';
 import 'metro/fare_distance_page.dart';
+import 'metro/transfer_walking_time_page.dart';
 
 class NavigationPage extends StatefulWidget {
   final String userToken;
@@ -174,6 +175,25 @@ class _NavigationPageState extends State<NavigationPage> {
                           },
                         ),
                         const Text('票價距離'),
+                      ],
+                    ),
+                    const SizedBox(width: 32),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.directions_walk),
+                          tooltip: '轉乘步行',
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const TransferWalkingPage(),
+                              ),
+                            );
+                          },
+                        ),
+                        const Text('步行排行'),
                       ],
                     ),
                   ],
