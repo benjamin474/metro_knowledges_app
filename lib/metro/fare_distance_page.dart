@@ -41,6 +41,7 @@ class _FareDistancePageState extends State<FareDistancePage> {
   int totalCount = 0;
   int loadedCount = 0;
   double progress = 0.0;
+  String? errorMessage;
 
   String? selectedStart;
   String? selectedEnd;

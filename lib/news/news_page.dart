@@ -22,6 +22,7 @@ class _NewsPageState extends State<NewsPage> {
   ];
   String selectedCode = 'TRTC';
   bool loading = true;
+  String? errorMessage;
   List<NewsItem> newsList = [];
 
   @override
@@ -31,7 +32,10 @@ class _NewsPageState extends State<NewsPage> {
   }
 
   Future<void> fetchNewsData() async {
-    setState(() => loading = true);
+    setState(() {
+      loading = true;
+      errorMessage = null;
+    });
     try {
       final token = await TdxAuth.getToken();
       final url =
@@ -54,9 +58,10 @@ class _NewsPageState extends State<NewsPage> {
         throw Exception('API error: ${res.statusCode}');
       }
     } catch (e) {
-      setState(() => loading = false);
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('錯誤: $e')));
+      setState(() {
+        loading = false;
+        errorMessage = '請檢查網路連線或稍後重試';
+      });
     }
   }
 
@@ -76,52 +81,60 @@ class _NewsPageState extends State<NewsPage> {
       appBar: AppBar(title: const Text('最新新聞')),
       body: loading
           ? const Center(child: CircularProgressIndicator())
-          : SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    DropdownButtonFormField<String>(
-                      value: selectedCode,
-                      items: metroSystems
-                          .map((m) => DropdownMenuItem(
-                                value: m['code'],
-                                child: Text(m['label']!),
-                              ))
-                          .toList(),
-                      decoration: const InputDecoration(
-                        labelText: '選擇捷運公司',
-                        border: OutlineInputBorder(),
-                      ),
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() => selectedCode = value);
-                          fetchNewsData();
-                        }
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: newsList.length,
-                        itemBuilder: (context, index) {
-                          final item = newsList[index];
-                          return Card(
-                            elevation: 2,
-                            margin: const EdgeInsets.symmetric(vertical: 6),
-                            child: ListTile(
-                              title: Text(item.title),
-                              subtitle: Text(
-                                  '發布時間: ${item.publishTime.toLocal()}'),
-                              onTap: () => _launchUrl(item.newsURL),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+          : (
+              errorMessage != null
+                  ? Center(child: Text(errorMessage!, style: TextStyle(fontSize: 16)))
+                  : (
+                      newsList.isEmpty
+                          ? Center(child: Text('查無新聞', style: TextStyle(fontSize: 16)))
+                          : SafeArea(
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  children: [
+                                    DropdownButtonFormField<String>(
+                                      value: selectedCode,
+                                      items: metroSystems
+                                          .map((m) => DropdownMenuItem(
+                                                value: m['code'],
+                                                child: Text(m['label']!),
+                                              ))
+                                          .toList(),
+                                      decoration: const InputDecoration(
+                                        labelText: '選擇捷運公司',
+                                        border: OutlineInputBorder(),
+                                      ),
+                                      onChanged: (value) {
+                                        if (value != null) {
+                                          setState(() => selectedCode = value);
+                                          fetchNewsData();
+                                        }
+                                      },
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Expanded(
+                                      child: ListView.builder(
+                                        itemCount: newsList.length,
+                                        itemBuilder: (context, index) {
+                                          final item = newsList[index];
+                                          return Card(
+                                            elevation: 2,
+                                            margin: const EdgeInsets.symmetric(vertical: 6),
+                                            child: ListTile(
+                                              title: Text(item.title),
+                                              subtitle: Text(
+                                                  '發布時間: ${item.publishTime.toLocal()}'),
+                                              onTap: () => _launchUrl(item.newsURL),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                    )
             ),
     );
   }

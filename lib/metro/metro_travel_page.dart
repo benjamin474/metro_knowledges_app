@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:taipei_metro_app/models/travel_time_model.dart';
+import 'package:taipei_metro_app/models/travel_time_model.dart'; // 引用 model
 import '../tdx_auth.dart'; // 引用你放 TdxAuth 的檔案
-import '../models/travel_time_model.dart'; // 引用 model
-import 'package:taipei_metro_app/utils/csv_storage.dart';
+import 'package:taipei_metro_app/unuseData/utils/csv_storage.dart';
 
 class MetroTravelPage extends StatefulWidget {
   const MetroTravelPage({
@@ -24,6 +22,7 @@ class _MetroTravelPageState extends State<MetroTravelPage> {
   List<TravelTime> travelList = [];
   List<TravelTime> filteredList = [];
   bool loading = true;
+  String? errorMessage;
 
   // 多捷運系統選項
   final List<Map<String, String>> metroSystems = [
@@ -74,6 +73,10 @@ class _MetroTravelPageState extends State<MetroTravelPage> {
       }
     } catch (e) {
       debugPrint('錯誤: $e');
+      setState(() {
+        errorMessage = '無法載入資料，請稍後再試。';
+        loading = false;
+      });
     }
   }
 
@@ -106,6 +109,126 @@ class _MetroTravelPageState extends State<MetroTravelPage> {
 
   @override
   Widget build(BuildContext context) {
+    // 決定顯示內容
+    Widget bodyContent;
+    if (loading) {
+      bodyContent = const Center(child: CircularProgressIndicator());
+    } else if (errorMessage != null) {
+      bodyContent = Center(child: Text(errorMessage!, style: const TextStyle(fontSize: 16)));
+    } else if (filteredList.isEmpty) {
+      bodyContent = const Center(child: Text('查無資料', style: TextStyle(fontSize: 16)));
+    } else {
+      bodyContent = SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Column(
+            children: [
+              // Metro system selector and search bar
+              Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: DropdownButtonFormField<String>(
+                      value: selectedSystemCode,
+                      items: metroSystems
+                          .map(
+                            (m) => DropdownMenuItem(
+                              value: m['code'],
+                              child: Text(
+                                m['label']!,
+                                overflow: TextOverflow.ellipsis, // 防止文字溢出
+                              ),
+                            ),
+                          )
+                          .toList(),
+                      decoration: InputDecoration(
+                        labelText: '路網',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() {
+                            selectedSystemCode = value;
+                            fetchTravelData();
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    flex: 5,
+                    child: TextField(
+                      controller: searchController,
+                      decoration: InputDecoration(
+                        hintText: '輸入站名搜尋',
+                        filled: true,
+                        fillColor: Theme.of(context).cardColor,
+                        prefixIcon: const Icon(Icons.search),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 0,
+                          horizontal: 16,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(24),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      onChanged: (value) => filterResults(),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              // Sorting buttons
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: () => sortTravelList(true),
+                    child: const Text('時間最短升序'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => sortTravelList(false),
+                    child: const Text('時間最長降序'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              // Result list
+              Expanded(
+                child: ListView.builder(
+                  itemCount: filteredList.length,
+                  itemBuilder: (context, index) {
+                    final t = filteredList[index];
+                    return Card(
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      margin: const EdgeInsets.symmetric(vertical: 6),
+                      child: ListTile(
+                        title: Text('${t.fromStation} ➜ ${t.toStation}'),
+                        subtitle: Text(
+                          '行車：${t.runTime} 秒  停靠：${t.stopTime} 秒',
+                        ),
+                        leading: CircleAvatar(
+                          backgroundColor: Theme.of(context).primaryColor,
+                          child: Text('${t.sequence}'),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('捷運站對站行車時間'),
@@ -121,117 +244,7 @@ class _MetroTravelPageState extends State<MetroTravelPage> {
           ),
         ],
       ),
-      body: loading
-          ? const Center(child: CircularProgressIndicator())
-          : SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                child: Column(
-                  children: [
-                    // Metro system selector and search bar
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: DropdownButtonFormField<String>(
-                            value: selectedSystemCode,
-                            items: metroSystems
-                                .map(
-                                  (m) => DropdownMenuItem(
-                                    value: m['code'],
-                                    child: Text(m['label']!),
-                                  ),
-                                )
-                                .toList(),
-                            decoration: InputDecoration(
-                              labelText: '路網',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                            ),
-                            onChanged: (value) {
-                              if (value != null) {
-                                setState(() {
-                                  selectedSystemCode = value;
-                                  fetchTravelData();
-                                });
-                              }
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          flex: 5,
-                          child: TextField(
-                            controller: searchController,
-                            decoration: InputDecoration(
-                              hintText: '輸入站名搜尋',
-                              filled: true,
-                              fillColor: Theme.of(context).cardColor,
-                              prefixIcon: const Icon(Icons.search),
-                              contentPadding: const EdgeInsets.symmetric(
-                                vertical: 0,
-                                horizontal: 16,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(24),
-                                borderSide: BorderSide.none,
-                              ),
-                            ),
-                            onChanged: (value) => filterResults(),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    // Sorting buttons
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () => sortTravelList(true),
-                          child: const Text('時間最短升序'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () => sortTravelList(false),
-                          child: const Text('時間最長降序'),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    // Result list
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: filteredList.length,
-                        itemBuilder: (context, index) {
-                          final t = filteredList[index];
-                          return Card(
-                            elevation: 2,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            margin: const EdgeInsets.symmetric(vertical: 6),
-                            child: ListTile(
-                              title: Text('${t.fromStation} ➜ ${t.toStation}'),
-                              subtitle: Text(
-                                '行車：${t.runTime} 秒  停靠：${t.stopTime} 秒',
-                              ),
-                              leading: CircleAvatar(
-                                backgroundColor: Theme.of(context).primaryColor,
-                                child: Text('${t.sequence}'),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+      body: bodyContent,
     );
   }
 }
