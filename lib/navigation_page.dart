@@ -5,6 +5,7 @@ import 'package:taipei_metro_app/account/signin_page.dart';
 import 'metro/metro_travel_page.dart';
 import 'news/news_page.dart';
 import 'account/settings_page.dart';
+import 'metro/fare_distance_page.dart';
 
 class NavigationPage extends StatefulWidget {
   final String userToken;
@@ -154,6 +155,25 @@ class _NavigationPageState extends State<NavigationPage> {
                           },
                         ),
                         const Text('行車時長'),
+                      ],
+                    ),
+                    const SizedBox(width: 32),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.attach_money),
+                          tooltip: '票價距離',
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const FareDistancePage(),
+                              ),
+                            );
+                          },
+                        ),
+                        const Text('票價距離'),
                       ],
                     ),
                   ],
