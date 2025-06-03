@@ -113,41 +113,77 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('登入')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: AnimatedOpacity(
-          duration: const Duration(milliseconds: 800),
-          opacity: isLoading ? 0.5 : 1.0,
-          child: Column(
-            children: [
-              TextField(
-                controller: loginController,
-                decoration: const InputDecoration(labelText: '帳號或電子郵件'),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/background.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
               ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: passwordController,
-                decoration: const InputDecoration(labelText: '密碼'),
-                obscureText: true,
+              elevation: 8,
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: loginController,
+                      decoration: const InputDecoration(
+                        labelText: '帳號或電子郵件',
+                        prefixIcon: Icon(Icons.person),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: passwordController,
+                      decoration: const InputDecoration(
+                        labelText: '密碼',
+                        prefixIcon: Icon(Icons.lock),
+                      ),
+                      obscureText: true,
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton(
+                      onPressed: isLoading ? null : signIn,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: isLoading
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text('登入', style: TextStyle(fontSize: 18)),
+                    ),
+                    const SizedBox(height: 16),
+                    TextButton(
+                      onPressed: forgotPassword,
+                      child: const Text('忘記密碼？',
+                          style: TextStyle(color: Colors.blueAccent)),
+                    ),
+                    const Divider(height: 32, thickness: 1),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SignUpPage()),
+                        );
+                      },
+                      child: const Text('註冊新帳號',
+                          style: TextStyle(color: Colors.blueAccent)),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: isLoading ? null : signIn,
-                child: isLoading
-                    ? const CircularProgressIndicator()
-                    : const Text('登入'),
-              ),
-              TextButton(onPressed: forgotPassword, child: const Text('忘記密碼')),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const SignUpPage()),
-                  );
-                },
-                child: const Text('註冊新帳號'),
-              ),
-            ],
+            ),
           ),
         ),
       ),
