@@ -76,66 +76,73 @@ class _NewsPageState extends State<NewsPage> {
     }
   }
 
+  Future<void> _fetchNews() async {
+    await fetchNewsData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('最新新聞')),
-      body: loading
-          ? const Center(child: CircularProgressIndicator())
-          : (errorMessage != null
-              ? Center(child: Text(errorMessage!, style: const TextStyle(fontSize: 16)))
-              : newsList.isEmpty
-                  ? Center(child: Text('查無新聞', style: TextStyle(fontSize: 16)))
-                  : SafeArea(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          children: [
-                            DropdownButtonFormField<String>(
-                              value: selectedCode,
-                              items: metroSystems
-                                  .map((m) => DropdownMenuItem(
-                                        value: m['code'],
-                                        child: Text(m['label']!),
-                                      ))
-                                  .toList(),
-                              decoration: const InputDecoration(
-                                labelText: '選擇捷運公司',
-                                border: OutlineInputBorder(),
-                              ),
-                              onChanged: (value) {
-                                if (value != null) {
-                                  setState(() => selectedCode = value);
-                                  fetchNewsData();
-                                }
-                              },
-                            ),
-                            const SizedBox(height: 12),
-                            Expanded(
-                              child: ListView.builder(
-                                itemCount: newsList.length,
-                                itemBuilder: (context, index) {
-                                  final item = newsList[index];
-                                  return AnimatedListCard(
-                                    index: index,
-                                    child: Card(
-                                      elevation: 2,
-                                      margin: const EdgeInsets.symmetric(vertical: 6),
-                                      child: ListTile(
-                                        title: Text(item.title),
-                                        subtitle: Text(
-                                            '發布時間: ${item.publishTime.toLocal()}'),
-                                        onTap: () => _launchUrl(item.newsURL),
-                                      ),
-                                    ),
-                                  );
+      body: RefreshIndicator(
+        onRefresh: _fetchNews,
+        child: loading
+            ? const Center(child: CircularProgressIndicator())
+            : (errorMessage != null
+                ? Center(child: Text(errorMessage!, style: const TextStyle(fontSize: 16)))
+                : newsList.isEmpty
+                    ? Center(child: Text('查無新聞', style: TextStyle(fontSize: 16)))
+                    : SafeArea(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: [
+                              DropdownButtonFormField<String>(
+                                value: selectedCode,
+                                items: metroSystems
+                                    .map((m) => DropdownMenuItem(
+                                          value: m['code'],
+                                          child: Text(m['label']!),
+                                        ))
+                                    .toList(),
+                                decoration: const InputDecoration(
+                                  labelText: '選擇捷運公司',
+                                  border: OutlineInputBorder(),
+                                ),
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    setState(() => selectedCode = value);
+                                    fetchNewsData();
+                                  }
                                 },
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 12),
+                              Expanded(
+                                child: ListView.builder(
+                                  itemCount: newsList.length,
+                                  itemBuilder: (context, index) {
+                                    final item = newsList[index];
+                                    return AnimatedListCard(
+                                      index: index,
+                                      child: Card(
+                                        elevation: 2,
+                                        margin: const EdgeInsets.symmetric(vertical: 6),
+                                        child: ListTile(
+                                          title: Text(item.title),
+                                          subtitle: Text(
+                                              '發布時間: ${item.publishTime.toLocal()}'),
+                                          onTap: () => _launchUrl(item.newsURL),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    )),
+                      )),
+      ),
     );
   }
 }

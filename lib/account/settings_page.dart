@@ -55,9 +55,10 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('使用者設定')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
+      body: RefreshIndicator(
+        onRefresh: _loadPreferences,
+        child: ListView(
+          padding: const EdgeInsets.all(16.0),
           children: [
             TextField(
               controller: accountController,

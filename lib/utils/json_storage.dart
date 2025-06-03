@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
+import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
 
 class JsonStorage {
@@ -7,7 +8,7 @@ class JsonStorage {
 
   static Future<File> _getFile() async {
     final directory = await getApplicationDocumentsDirectory();
-    print('檔案存放位置: ${directory.path}/$_fileName');
+    debugPrint('檔案存放位置: ${directory.path}/$_fileName');
     return File('${directory.path}/$_fileName');
   }
 

@@ -64,7 +64,7 @@ class _NavigationPageState extends State<NavigationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('歡迎來到捷運app'),
+        title: const Text('捷運小知識'),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -94,8 +94,9 @@ class _NavigationPageState extends State<NavigationPage> {
             fit: BoxFit.cover,
           ),
         ),
-        child: SafeArea(
-          child: Column(
+        child: RefreshIndicator(
+          onRefresh: fetchQuoteOfTheDay,
+          child: ListView(
             children: [
               Container(
                 decoration: BoxDecoration(
