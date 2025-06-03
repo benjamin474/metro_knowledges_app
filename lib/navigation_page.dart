@@ -61,146 +61,141 @@ class _NavigationPageState extends State<NavigationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      themeMode: _themeMode,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('導覽頁面'),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.settings),
-              tooltip: '設定',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const SettingsPage()),
-                );
-              },
+    // Use root MaterialApp's theme; only return Scaffold
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('導覽頁面'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            tooltip: '設定',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const SettingsPage()),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const SignInPage()),
+              );
+            },
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Text(
+                    '每日名言',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '"$quote"',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '- $author',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
             ),
-            IconButton(
-              icon: const Icon(Icons.logout),
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SignInPage()),
-                );
-              },
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.article),
+                        tooltip: '新聞',
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const NewsPage()),
+                          );
+                        },
+                      ),
+                      const Text('新聞'),
+                    ],
+                  ),
+                  const SizedBox(width: 32),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.train),
+                        tooltip: '行車時長',
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => MetroTravelPage(
+                                onToggleTheme: _toggleTheme,
+                                themeMode: _themeMode,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      const Text('行車時長'),
+                    ],
+                  ),
+                  const SizedBox(width: 32),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.attach_money),
+                        tooltip: '票價距離',
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const FareDistancePage(),
+                            ),
+                          );
+                        },
+                      ),
+                      const Text('票價距離'),
+                    ],
+                  ),
+                  const SizedBox(width: 32),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.directions_walk),
+                        tooltip: '轉乘步行',
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const TransferWalkingPage(),
+                            ),
+                          );
+                        },
+                      ),
+                      const Text('步行排行'),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ],
-        ),
-        body: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Text(
-                      '每日名言',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '"$quote"',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '- $author',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.article),
-                          tooltip: '新聞',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => const NewsPage()),
-                            );
-                          },
-                        ),
-                        const Text('新聞'),
-                      ],
-                    ),
-                    const SizedBox(width: 32),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.train),
-                          tooltip: '行車時長',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => MetroTravelPage(
-                                  onToggleTheme: _toggleTheme,
-                                  themeMode: _themeMode,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        const Text('行車時長'),
-                      ],
-                    ),
-                    const SizedBox(width: 32),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.attach_money),
-                          tooltip: '票價距離',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const FareDistancePage(),
-                              ),
-                            );
-                          },
-                        ),
-                        const Text('票價距離'),
-                      ],
-                    ),
-                    const SizedBox(width: 32),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.directions_walk),
-                          tooltip: '轉乘步行',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const TransferWalkingPage(),
-                              ),
-                            );
-                          },
-                        ),
-                        const Text('步行排行'),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

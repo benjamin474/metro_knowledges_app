@@ -53,8 +53,9 @@ class _FareDistancePageState extends State<FareDistancePage> {
     fetchData();
   }
 
-  // 修改 fetchData，加入分頁迴圈，直到取得所有資料
+  // 修改 fetchData 增加 mounted 檢查
   Future<void> fetchData() async {
+    if (!mounted) return;
     setState(() {
       loading = true;
       loadedCount = 0;
@@ -68,33 +69,40 @@ class _FareDistancePageState extends State<FareDistancePage> {
       while (true) {
         final url = '$apiUrl&limit=$limit&offset=$offset';
         final res = await http.get(Uri.parse(url));
+        if (!mounted) return;
         if (res.statusCode != 200) {
           throw Exception('API 回應錯誤: ${res.statusCode}');
         }
         final jsonBody = json.decode(res.body);
-        // 第一次請求取得總筆數
         if (offset == 0) {
           total = (jsonBody['result']['count'] as num).toInt();
-          setState(() { totalCount = total; });
+          if (!mounted) return;
+          setState(() {
+            totalCount = total;
+          });
         }
         final List<dynamic> records = jsonBody['result']['results'];
         if (records.isEmpty) break;
         final batch = records.map((e) => FareDistance.fromJson(e as Map<String, dynamic>));
         allRecords.addAll(batch);
-        // 更新已載入筆數及進度
         loadedCount = allRecords.length;
         progress = total > 0 ? loadedCount / total : 0.0;
+        if (!mounted) return;
         setState(() {});
         if (records.length < limit) break;
         offset += limit;
       }
+      if (!mounted) return;
       setState(() {
         dataList = allRecords;
         loading = false;
       });
     } catch (e) {
       debugPrint('錯誤: $e');
-      setState(() => loading = false);
+      if (!mounted) return;
+      setState(() {
+        loading = false;
+      });
     }
   }
 
