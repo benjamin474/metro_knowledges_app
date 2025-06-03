@@ -15,8 +15,29 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: '登入系統',
-      theme: ThemeData.dark(),
-      darkTheme: ThemeData.dark(),
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.dark(
+          primary: Colors.tealAccent,
+          onPrimary: Colors.black,
+          secondary: Colors.amber,
+        ),
+        scaffoldBackgroundColor: Colors.grey[900],
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.tealAccent,
+            foregroundColor: Colors.black,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            elevation: 4,
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          fillColor: Colors.grey[800],
+          filled: true,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      ),
+      darkTheme: ThemeData.dark(useMaterial3: true),
       themeMode: ThemeMode.dark,
       home: const SignInPage(),
     );

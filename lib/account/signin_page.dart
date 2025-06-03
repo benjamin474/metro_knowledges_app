@@ -112,36 +112,40 @@ class _SignInPageState extends State<SignInPage> {
       appBar: AppBar(title: const Text('登入')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: loginController,
-              decoration: const InputDecoration(labelText: '帳號或電子郵件'),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: passwordController,
-              decoration: const InputDecoration(labelText: '密碼'),
-              obscureText: true,
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: isLoading ? null : signIn,
-              child: isLoading
-                  ? const CircularProgressIndicator()
-                  : const Text('登入'),
-            ),
-            TextButton(onPressed: forgotPassword, child: const Text('忘記密碼')),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SignUpPage()),
-                );
-              },
-              child: const Text('註冊新帳號'),
-            ),
-          ],
+        child: AnimatedOpacity(
+          duration: const Duration(milliseconds: 800),
+          opacity: isLoading ? 0.5 : 1.0,
+          child: Column(
+            children: [
+              TextField(
+                controller: loginController,
+                decoration: const InputDecoration(labelText: '帳號或電子郵件'),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: passwordController,
+                decoration: const InputDecoration(labelText: '密碼'),
+                obscureText: true,
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: isLoading ? null : signIn,
+                child: isLoading
+                    ? const CircularProgressIndicator()
+                    : const Text('登入'),
+              ),
+              TextButton(onPressed: forgotPassword, child: const Text('忘記密碼')),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SignUpPage()),
+                  );
+                },
+                child: const Text('註冊新帳號'),
+              ),
+            ],
+          ),
         ),
       ),
     );
