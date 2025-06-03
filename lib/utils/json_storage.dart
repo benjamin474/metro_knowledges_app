@@ -7,7 +7,7 @@ class JsonStorage {
 
   static Future<File> _getFile() async {
     final directory = await getApplicationDocumentsDirectory();
-    print('User data file path: ${directory.path}/$_fileName');
+    print('檔案存放位置: ${directory.path}/$_fileName');
     return File('${directory.path}/$_fileName');
   }
 

@@ -10,8 +10,9 @@ import 'metro/transfer_walking_time_page.dart';
 
 class NavigationPage extends StatefulWidget {
   final String userToken;
+  final String userAccount;
 
-  const NavigationPage({super.key, required this.userToken});
+  const NavigationPage({super.key, required this.userToken, required this.userAccount});
 
   @override
   State<NavigationPage> createState() => _NavigationPageState();
@@ -71,7 +72,7 @@ class _NavigationPageState extends State<NavigationPage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const SettingsPage()),
+                MaterialPageRoute(builder: (_) => SettingsPage(userAccount: widget.userAccount)),
               );
             },
           ),

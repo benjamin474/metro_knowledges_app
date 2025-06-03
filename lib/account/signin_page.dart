@@ -55,7 +55,10 @@ class _SignInPageState extends State<SignInPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => NavigationPage(userToken: userToken),
+              builder: (context) => NavigationPage(
+                userToken: userToken,
+                userAccount: loginController.text, // Pass the user account
+              ),
             ),
           );
         }

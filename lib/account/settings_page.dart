@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../unuseData/utils/csv_storage.dart';
+import '../utils/json_storage.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key});
+  final String userAccount;
+  const SettingsPage({super.key, required this.userAccount});
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
@@ -11,25 +12,41 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   final TextEditingController accountController = TextEditingController();
   final TextEditingController nicknameController = TextEditingController();
-  List<String> history = [];
+  final TextEditingController birthdayController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    accountController.text = widget.userAccount;
     _loadPreferences();
   }
 
   Future<void> _loadPreferences() async {
-    final data = await CsvStorage.loadData();
+    final account = accountController.text;
+    if (account.isEmpty) {
+      nicknameController.clear();
+      birthdayController.clear();
+      return;
+    }
+    final data = await JsonStorage.getUserData(account);
     setState(() {
-      accountController.text = data['account'] ?? '';
       nicknameController.text = data['nickname'] ?? '';
-      history = data['history'] ?? [];
+      birthdayController.text = data['birthday'] ?? '';
     });
   }
 
   Future<void> _savePreferences() async {
-    await CsvStorage.saveData(accountController.text, nicknameController.text, history);
+    final account = accountController.text;
+    if (account.isEmpty) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('請先輸入帳號')));
+      return;
+    }
+    await JsonStorage.saveData(
+      account,
+      nicknameController.text,
+      birthdayController.text,
+    );
     ScaffoldMessenger.of(context)
         .showSnackBar(const SnackBar(content: Text('設定已儲存')));
   }
@@ -45,6 +62,7 @@ class _SettingsPageState extends State<SettingsPage> {
             TextField(
               controller: accountController,
               decoration: const InputDecoration(labelText: '帳號'),
+              enabled: false, // disable editing as it's auto-filled
             ),
             const SizedBox(height: 16),
             TextField(
@@ -52,29 +70,14 @@ class _SettingsPageState extends State<SettingsPage> {
               decoration: const InputDecoration(labelText: '暱稱'),
             ),
             const SizedBox(height: 16),
+            TextField(
+              controller: birthdayController,
+              decoration: const InputDecoration(labelText: '生日 (YYYY-MM-DD)'),
+            ),
+            const SizedBox(height: 24),
             ElevatedButton(
               onPressed: _savePreferences,
               child: const Text('儲存設定'),
-            ),
-            const SizedBox(height: 24),
-            const Text('搜尋歷史'),
-            Expanded(
-              child: ListView.builder(
-                itemCount: history.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(history[index]),
-                  );
-                },
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                CsvStorage.clearHistory().then((_) {
-                  setState(() => history = []);
-                });
-              },
-              child: const Text('清除搜尋歷史'),
             ),
           ],
         ),
