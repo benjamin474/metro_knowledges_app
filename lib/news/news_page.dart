@@ -83,65 +83,124 @@ class _NewsPageState extends State<NewsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('最新新聞')),
-      body: RefreshIndicator(
-        onRefresh: _fetchNews,
-        child: loading
-            ? const Center(child: CircularProgressIndicator())
-            : (errorMessage != null
-                ? Center(child: Text(errorMessage!, style: const TextStyle(fontSize: 16)))
-                : newsList.isEmpty
-                    ? Center(child: Text('查無新聞', style: TextStyle(fontSize: 16)))
-                    : SafeArea(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            children: [
-                              DropdownButtonFormField<String>(
-                                value: selectedCode,
-                                items: metroSystems
-                                    .map((m) => DropdownMenuItem(
-                                          value: m['code'],
-                                          child: Text(m['label']!),
-                                        ))
-                                    .toList(),
-                                decoration: const InputDecoration(
-                                  labelText: '選擇捷運公司',
-                                  border: OutlineInputBorder(),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        title: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.teal.withOpacity(0.7), Colors.blueAccent.withOpacity(0.7)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: const Text('最新新聞', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF232526), Color(0xFF414345)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: RefreshIndicator(
+          onRefresh: _fetchNews,
+          child: loading
+              ? const Center(child: CircularProgressIndicator())
+              : (errorMessage != null
+                  ? Center(child: Text(errorMessage!, style: const TextStyle(fontSize: 16, color: Colors.redAccent)))
+                  : newsList.isEmpty
+                      ? Center(child: Text('查無新聞', style: TextStyle(fontSize: 16, color: Colors.white70)))
+                      : SafeArea(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.08),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: DropdownButtonFormField<String>(
+                                    value: selectedCode,
+                                    items: metroSystems
+                                        .map((m) => DropdownMenuItem(
+                                              value: m['code'],
+                                              child: Text(m['label']!),
+                                            ))
+                                        .toList(),
+                                    decoration: const InputDecoration(
+                                      labelText: '選擇捷運公司',
+                                      border: OutlineInputBorder(),
+                                    ),
+                                    onChanged: (value) {
+                                      if (value != null) {
+                                        setState(() => selectedCode = value);
+                                        fetchNewsData();
+                                      }
+                                    },
+                                  ),
                                 ),
-                                onChanged: (value) {
-                                  if (value != null) {
-                                    setState(() => selectedCode = value);
-                                    fetchNewsData();
-                                  }
-                                },
-                              ),
-                              const SizedBox(height: 12),
-                              Expanded(
-                                child: ListView.builder(
-                                  itemCount: newsList.length,
-                                  itemBuilder: (context, index) {
-                                    final item = newsList[index];
-                                    return AnimatedListCard(
-                                      index: index,
-                                      child: Card(
-                                        elevation: 2,
-                                        margin: const EdgeInsets.symmetric(vertical: 6),
-                                        child: ListTile(
-                                          title: Text(item.title),
-                                            subtitle: Text(
-                                              '發布時間: ${item.publishTime.toLocal().toString().substring(0, 10)}'),
-                                          onTap: () => _launchUrl(item.newsURL),
+                                const SizedBox(height: 16),
+                                Expanded(
+                                  child: ListView.builder(
+                                    itemCount: newsList.length,
+                                    itemBuilder: (context, index) {
+                                      final item = newsList[index];
+                                      return AnimatedOpacity(
+                                        opacity: 1.0,
+                                        duration: Duration(milliseconds: 300 + index * 30),
+                                        child: Card(
+                                          elevation: 6,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(18),
+                                          ),
+                                          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+                                          color: null, // 使用自訂 Container 當底色
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              gradient: LinearGradient(
+                                                colors: [
+                                                  const Color(0xFFB2FEFA).withOpacity(0.85), // 淡藍綠
+                                                  const Color(0xFF0ED2F7).withOpacity(0.7),  // 淡藍
+                                                ],
+                                                begin: Alignment.topLeft,
+                                                end: Alignment.bottomRight,
+                                              ),
+                                              borderRadius: BorderRadius.circular(18),
+                                            ),
+                                            child: ListTile(
+                                              title: Text(
+                                                item.title,
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black87,
+                                                ),
+                                              ),
+                                              subtitle: Text(
+                                                '發布時間: ${item.publishTime.toLocal().toString().substring(0, 16)}',
+                                                style: const TextStyle(color: Colors.black54),
+                                              ),
+                                              trailing: const Icon(Icons.chevron_right, color: Colors.teal),
+                                              onTap: () => _launchUrl(item.newsURL),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  },
+                                      );
+                                    },
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      )),
+                        )),
+        ),
       ),
     );
   }

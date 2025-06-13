@@ -296,21 +296,37 @@ class _MetroTravelPageState extends State<MetroTravelPage> {
                         AnimatedListCard(
                           index: i,
                           child: Card(
-                            elevation: 2,
+                            elevation: 4,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(16),
                             ),
-                            margin: const EdgeInsets.symmetric(vertical: 6),
-                            child: ListTile(
-                              // 左側顯示排行名次（全域排序後的 index）
-                              leading: CircleAvatar(
-                                backgroundColor: Theme.of(context).primaryColor,
-                                child: Text('${currentPage * pageSize + i + 1}'),
+                            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
+                            color: null, // 用自訂 Container 當底色
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color(0xFFE0C3FC).withOpacity(0.85), // 淡紫
+                                    Color(0xFF8EC5FC).withOpacity(0.7),  // 淡藍紫
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(16),
                               ),
-                              title: Text(
-                                  '${pagedList[i].fromStation} ➜ ${pagedList[i].toStation}'),
-                              subtitle: Text(
-                                '行車：${pagedList[i].runTime} 秒  停靠：${pagedList[i].stopTime} 秒',
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Theme.of(context).primaryColor,
+                                  child: Text('${currentPage * pageSize + i + 1}', style: const TextStyle(color: Colors.black)),
+                                ),
+                                title: Text(
+                                  '${pagedList[i].fromStation} ➜ ${pagedList[i].toStation}',
+                                  style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+                                ),
+                                subtitle: Text(
+                                  '行車：${pagedList[i].runTime} 秒  停靠：${pagedList[i].stopTime} 秒',
+                                  style: const TextStyle(color: Colors.black54),
+                                ),
                               ),
                             ),
                           ),

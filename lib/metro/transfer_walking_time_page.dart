@@ -126,10 +126,36 @@ class _TransferWalkingPageState extends State<TransferWalkingPage> {
                         itemCount: list.length,
                         itemBuilder: (context, index) {
                           final item = list[index];
-                          return ListTile(
-                            leading: Text(item.sno),
-                            title: Text(item.station),
-                            trailing: Text('${item.minutes} 分鐘'),
+                          return Card(
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 2),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color(0xFFFFE29F).withOpacity(0.85), // 淡橘
+                                    Color(0xFFFFA17F).withOpacity(0.7), // 橘粉
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: ListTile(
+                                leading: Text(item.sno),
+                                title: Text(item.station,
+                                    style: const TextStyle(
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.bold)),
+                                subtitle: Text('${item.minutes} 分鐘',
+                                    style: const TextStyle(
+                                        color: Colors.black54)),
+                              ),
+                            ),
                           );
                         },
                       ),

@@ -193,15 +193,32 @@ class _FareDistancePageState extends State<FareDistancePage> {
                   const SizedBox(height: 20),
                   if (result != null)
                     Card(
-                      child: Padding(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
+                      color: null, // 用自訂 Container 當底色
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Color(0xFFB7F8DB).withOpacity(0.85), // 淡綠
+                              Color(0xFF50A7C2).withOpacity(0.7),  // 淡藍綠
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('起站: ${result!.startStation}'),
-                            Text('訖站: ${result!.endStation}'),
-                            Text('全票票價: ${result!.fare}'),
-                            Text('距離: ${result!.distance} 公里'),
+                            Text('起站: ${result!.startStation}', style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
+                            Text('訖站: ${result!.endStation}', style: const TextStyle(color: Colors.black87)),
+                            Text('全票票價: ${result!.fare}', style: const TextStyle(color: Colors.black87)),
+                            Text('距離: ${result!.distance} 公里', style: const TextStyle(color: Colors.black87)),
                           ],
                         ),
                       ),
