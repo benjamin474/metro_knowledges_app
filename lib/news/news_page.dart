@@ -130,7 +130,7 @@ class _NewsPageState extends State<NewsPage> {
                                         child: ListTile(
                                           title: Text(item.title),
                                             subtitle: Text(
-                                              '發布時間: ${item.publishTime.toLocal().toString().substring(0, 16)}'),
+                                              '發布時間: ${item.publishTime.toLocal().toString().substring(0, 10)}'),
                                           onTap: () => _launchUrl(item.newsURL),
                                         ),
                                       ),

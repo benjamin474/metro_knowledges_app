@@ -12,12 +12,22 @@ class JsonStorage {
     return File('${directory.path}/$_fileName');
   }
 
-  static Future<void> saveData(String account, String nickname, String birthday) async {
+  static Future<void> saveData(
+    String account,
+    String nickname,
+    String birthday,
+    String gender,
+    String nationality,
+    List<String> lines,
+  ) async {
     final file = await _getFile();
     Map<String, dynamic> data = await loadData();
     data[account] = {
       'nickname': nickname,
       'birthday': birthday,
+      'gender': gender,
+      'nationality': nationality,
+      'lines': lines,
     };
     final jsonString = jsonEncode(data);
     await file.writeAsString(jsonString);
