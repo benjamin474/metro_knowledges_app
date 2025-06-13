@@ -146,7 +146,13 @@ class _TransferWalkingPageState extends State<TransferWalkingPage> {
                                 borderRadius: BorderRadius.circular(16),
                               ),
                               child: ListTile(
-                                leading: Text(item.sno),
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.black,
+                                  child: Text(
+                                    '${index + 1}',
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                ),
                                 title: Text(item.station,
                                     style: const TextStyle(
                                         color: Colors.black87,

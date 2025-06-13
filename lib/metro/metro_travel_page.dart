@@ -316,8 +316,11 @@ class _MetroTravelPageState extends State<MetroTravelPage> {
                               ),
                               child: ListTile(
                                 leading: CircleAvatar(
-                                  backgroundColor: Theme.of(context).primaryColor,
-                                  child: Text('${currentPage * pageSize + i + 1}', style: const TextStyle(color: Colors.black)),
+                                  backgroundColor: Colors.black,
+                                  child: Text(
+                                    '${currentPage * pageSize + i + 1}',
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
                                 ),
                                 title: Text(
                                   '${pagedList[i].fromStation} ➜ ${pagedList[i].toStation}',

@@ -125,7 +125,7 @@ class _NewsPageState extends State<NewsPage> {
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
                                     color: Colors.white.withOpacity(0.08),
-                                    borderRadius: BorderRadius.circular(16),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: DropdownButtonFormField<String>(
                                     value: selectedCode,
@@ -184,7 +184,7 @@ class _NewsPageState extends State<NewsPage> {
                                                 ),
                                               ),
                                               subtitle: Text(
-                                                '發布時間: ${item.publishTime.toLocal().toString().substring(0, 16)}',
+                                                '發布時間: ${item.publishTime.toLocal().toString().substring(0, 10)}',
                                                 style: const TextStyle(color: Colors.black54),
                                               ),
                                               trailing: const Icon(Icons.chevron_right, color: Colors.teal),
