@@ -90,7 +90,7 @@ class _NavigationPageState extends State<NavigationPage> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/background.jpg'),
+            image: AssetImage('assets/wallpaper.jpeg'),
             fit: BoxFit.cover,
           ),
         ),
