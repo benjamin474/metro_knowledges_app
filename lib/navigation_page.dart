@@ -157,98 +157,107 @@ class _NavigationPageState extends State<NavigationPage> {
                   ),
                 ),
               ),
-              Expanded(
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // News
-                      AnimatedScale(
-                        duration: const Duration(milliseconds: 500),
-                        scale: 1.0,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                                icon: const Icon(Icons.article),
-                                tooltip: '新聞',
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) => const NewsPage()));
-                                }),
-                            const Text('新聞'),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 32),
-                      // Travel Time
-                      AnimatedScale(
-                        duration: const Duration(milliseconds: 500),
-                        scale: 1.0,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                                icon: const Icon(Icons.train),
-                                tooltip: '行車時長',
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) => MetroTravelPage(
-                                              onToggleTheme: _toggleTheme,
-                                              themeMode: _themeMode)));
-                                }),
-                            const Text('行車時長'),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 32),
-                      // Fare & Distance
-                      AnimatedScale(
-                        duration: const Duration(milliseconds: 500),
-                        scale: 1.0,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                                icon: const Icon(Icons.attach_money),
-                                tooltip: '票價距離',
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) => const FareDistancePage()));
-                                }),
-                            const Text('票價距離'),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 32),
-                      // Transfer Walking
-                      AnimatedScale(
-                        duration: const Duration(milliseconds: 500),
-                        scale: 1.0,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                                icon: const Icon(Icons.directions_walk),
-                                tooltip: '步行排行',
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) => const TransferWalkingPage()));
-                                }),
-                            const Text('步行排行'),
-                          ],
-                        ),
-                      ),
-                    ],
+              // 導覽功能區塊加上邊框與圓角
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.black87, Colors.black54],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // News
+                    AnimatedScale(
+                      duration: const Duration(milliseconds: 500),
+                      scale: 1.0,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                              icon: const Icon(Icons.article),
+                              tooltip: '新聞',
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => const NewsPage()));
+                              }),
+                          const Text('新聞'),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 32),
+                    // Travel Time
+                    AnimatedScale(
+                      duration: const Duration(milliseconds: 500),
+                      scale: 1.0,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                              icon: const Icon(Icons.train),
+                              tooltip: '行車時長',
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => MetroTravelPage(
+                                            onToggleTheme: _toggleTheme,
+                                            themeMode: _themeMode)));
+                              }),
+                          const Text('行車時長'),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 32),
+                    // Fare & Distance
+                    AnimatedScale(
+                      duration: const Duration(milliseconds: 500),
+                      scale: 1.0,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                              icon: const Icon(Icons.attach_money),
+                              tooltip: '票價距離',
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => const FareDistancePage()));
+                              }),
+                          const Text('票價距離'),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 32),
+                    // Transfer Walking
+                    AnimatedScale(
+                      duration: const Duration(milliseconds: 500),
+                      scale: 1.0,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                              icon: const Icon(Icons.directions_walk),
+                              tooltip: '步行排行',
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => const TransferWalkingPage()));
+                              }),
+                          const Text('步行排行'),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

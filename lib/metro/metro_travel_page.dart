@@ -42,6 +42,32 @@ class _MetroTravelPageState extends State<MetroTravelPage> {
   String selectedSystemCode = 'KRTC';
   final TextEditingController searchController = TextEditingController();
 
+  // 分頁相關
+  int currentPage = 0;
+  static const int pageSize = 20;
+
+  List<TravelTime> get pagedList {
+    final start = currentPage * pageSize;
+    final end = (start + pageSize).clamp(0, filteredList.length);
+    return filteredList.sublist(start, end);
+  }
+
+  void nextPage() {
+    if ((currentPage + 1) * pageSize < filteredList.length) {
+      setState(() {
+        currentPage++;
+      });
+    }
+  }
+
+  void prevPage() {
+    if (currentPage > 0) {
+      setState(() {
+        currentPage--;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -210,11 +236,13 @@ class _MetroTravelPageState extends State<MetroTravelPage> {
                   ),
                   const SizedBox(width: 8),
                   IconButton(
-                    icon: const Icon(Icons.sort),
+                    icon: const Icon(Icons.arrow_upward), // 升冪排序
+                    tooltip: '行駛時間由小到大',
                     onPressed: () => sortTravelList(true),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.sort_by_alpha),
+                    icon: const Icon(Icons.arrow_downward), // 降冪排序
+                    tooltip: '行駛時間由大到小',
                     onPressed: () => sortTravelList(false),
                   ),
                 ],
@@ -248,7 +276,7 @@ class _MetroTravelPageState extends State<MetroTravelPage> {
                         ),
                       ),
                     ] else ...[
-                      for (int i = 0; i < filteredList.length; i++)
+                      for (int i = 0; i < pagedList.length; i++)
                         AnimatedListCard(
                           index: i,
                           child: Card(
@@ -259,18 +287,35 @@ class _MetroTravelPageState extends State<MetroTravelPage> {
                             margin: const EdgeInsets.symmetric(vertical: 6),
                             child: ListTile(
                               title: Text(
-                                  '${filteredList[i].fromStation} ➜ ${filteredList[i].toStation}'),
+                                  '${pagedList[i].fromStation} ➜ ${pagedList[i].toStation}'),
                               subtitle: Text(
-                                '行車：${filteredList[i].runTime} 秒  停靠：${filteredList[i].stopTime} 秒',
+                                '行車：${pagedList[i].runTime} 秒  停靠：${pagedList[i].stopTime} 秒',
                               ),
                               leading: CircleAvatar(
                                 backgroundColor:
                                     Theme.of(context).primaryColor,
-                                child: Text('${filteredList[i].sequence}'),
+                                child: Text('${pagedList[i].sequence}'),
                               ),
                             ),
                           ),
                         ),
+                      const SizedBox(height: 12),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: currentPage > 0 ? prevPage : null,
+                            child: const Text('上一頁'),
+                          ),
+                          const SizedBox(width: 16),
+                          Text('第 ${currentPage + 1} 頁 / 共 ${(filteredList.length / pageSize).ceil()} 頁'),
+                          const SizedBox(width: 16),
+                          ElevatedButton(
+                            onPressed: (currentPage + 1) * pageSize < filteredList.length ? nextPage : null,
+                            child: const Text('下一頁'),
+                          ),
+                        ],
+                      ),
                     ],
                   ],
                 ),
