@@ -133,6 +133,9 @@ class _MetroTravelPageState extends State<MetroTravelPage> {
     }
   }
 
+  bool isAscending = true;
+  String get sortStatusText => isAscending ? '目前：行駛時間升序（由小到大）' : '目前：行駛時間降序（由大到小）';
+
   // 使用單一搜尋條件過濾
   Future<void> filterResults() async {
     final query = searchController.text.trim().toLowerCase();
@@ -148,15 +151,18 @@ class _MetroTravelPageState extends State<MetroTravelPage> {
         return t.fromStation.toLowerCase().contains(query) ||
             t.toStation.toLowerCase().contains(query);
       }).toList();
+      currentPage = 0;
     });
   }
 
   // 新增排序功能
   void sortTravelList(bool ascending) {
     setState(() {
+      isAscending = ascending;
       filteredList.sort((a, b) => ascending
           ? a.runTime.compareTo(b.runTime)
           : b.runTime.compareTo(a.runTime));
+      currentPage = 0;
     });
   }
 
@@ -187,63 +193,73 @@ class _MetroTravelPageState extends State<MetroTravelPage> {
             // 固定搜尋列與系統選擇
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    flex: 3,
-                    child: DropdownButtonFormField<String>(
-                      value: selectedSystemCode,
-                      items: metroSystems
-                          .map(
-                            (m) => DropdownMenuItem(
-                              value: m['code'],
-                              child: Text(
-                                m['label']!,
-                                style: const TextStyle(fontSize: 13),
-                              ),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: DropdownButtonFormField<String>(
+                          value: selectedSystemCode,
+                          items: metroSystems
+                              .map(
+                                (m) => DropdownMenuItem(
+                                  value: m['code'],
+                                  child: Text(
+                                    m['label']!,
+                                    style: const TextStyle(fontSize: 13),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                          decoration: InputDecoration(
+                            labelText: '路網',
+                            labelStyle: const TextStyle(fontSize: 13),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
                             ),
-                          )
-                          .toList(),
-                      decoration: InputDecoration(
-                        labelText: '路網',
-                        labelStyle: const TextStyle(fontSize: 13),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                          ),
+                          onChanged: (value) {
+                            if (value != null) {
+                              setState(() {
+                                selectedSystemCode = value;
+                                fetchTravelData();
+                              });
+                            }
+                          },
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                       ),
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() {
-                            selectedSystemCode = value;
-                            fetchTravelData();
-                          });
-                        }
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    flex: 5,
-                    child: TextField(
-                      controller: searchController,
-                      decoration: const InputDecoration(
-                        labelText: '搜尋站名',
-                        prefixIcon: Icon(Icons.search),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        flex: 5,
+                        child: TextField(
+                          controller: searchController,
+                          decoration: const InputDecoration(
+                            labelText: '搜尋站名',
+                            prefixIcon: Icon(Icons.search),
+                          ),
+                          onSubmitted: (_) => filterResults(),
+                        ),
                       ),
-                      onSubmitted: (_) => filterResults(),
-                    ),
+                      const SizedBox(width: 8),
+                      IconButton(
+                        icon: const Icon(Icons.arrow_upward), // 升冪排序
+                        tooltip: '行駛時間由小到大',
+                        onPressed: () => sortTravelList(true),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.arrow_downward), // 降冪排序
+                        tooltip: '行駛時間由大到小',
+                        onPressed: () => sortTravelList(false),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  IconButton(
-                    icon: const Icon(Icons.arrow_upward), // 升冪排序
-                    tooltip: '行駛時間由小到大',
-                    onPressed: () => sortTravelList(true),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.arrow_downward), // 降冪排序
-                    tooltip: '行駛時間由大到小',
-                    onPressed: () => sortTravelList(false),
+                  const SizedBox(height: 4),
+                  Text(
+                    sortStatusText,
+                    style: const TextStyle(fontSize: 13, color: Colors.tealAccent),
                   ),
                 ],
               ),
@@ -286,15 +302,15 @@ class _MetroTravelPageState extends State<MetroTravelPage> {
                             ),
                             margin: const EdgeInsets.symmetric(vertical: 6),
                             child: ListTile(
+                              // 左側顯示排行名次（全域排序後的 index）
+                              leading: CircleAvatar(
+                                backgroundColor: Theme.of(context).primaryColor,
+                                child: Text('${currentPage * pageSize + i + 1}'),
+                              ),
                               title: Text(
                                   '${pagedList[i].fromStation} ➜ ${pagedList[i].toStation}'),
                               subtitle: Text(
                                 '行車：${pagedList[i].runTime} 秒  停靠：${pagedList[i].stopTime} 秒',
-                              ),
-                              leading: CircleAvatar(
-                                backgroundColor:
-                                    Theme.of(context).primaryColor,
-                                child: Text('${pagedList[i].sequence}'),
                               ),
                             ),
                           ),
