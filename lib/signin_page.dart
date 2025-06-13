@@ -49,7 +49,7 @@ class _SignInPageState extends State<SignInPage> {
         } else {
           // 登入成功，取得 token
           final userToken = data['User-Token'];
-          final userAccount = data['login']; // 假设登录响应中包含用户账号
+          final userAccount = data['login']; 
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(

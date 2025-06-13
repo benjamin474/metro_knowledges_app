@@ -129,8 +129,8 @@ class _NewsPageState extends State<NewsPage> {
                                         margin: const EdgeInsets.symmetric(vertical: 6),
                                         child: ListTile(
                                           title: Text(item.title),
-                                          subtitle: Text(
-                                              '發布時間: ${item.publishTime.toLocal()}'),
+                                            subtitle: Text(
+                                              '發布時間: ${item.publishTime.toLocal().toString().substring(0, 16)}'),
                                           onTap: () => _launchUrl(item.newsURL),
                                         ),
                                       ),

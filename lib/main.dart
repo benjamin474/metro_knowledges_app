@@ -1,14 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'account/signin_page.dart';
+import 'navigation_page.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: 'assets/.env');
-  runApp(const MyApp());
+
+  // 使用 Flutter Secure Storage 檢查用戶登入狀態
+  const storage = FlutterSecureStorage();
+  final userToken = await storage.read(key: 'userToken');
+  final userAccount = await storage.read(key: 'userAccount');
+
+  runApp(
+    MyApp(
+      initialPage: userToken != null && userAccount != null
+          ? NavigationPage(userToken: userToken, userAccount: userAccount)
+          : const SignInPage(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final Widget initialPage;
+
+  const MyApp({super.key, required this.initialPage});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +44,9 @@ class MyApp extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.tealAccent,
             foregroundColor: Colors.black,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
             elevation: 4,
           ),
         ),
@@ -39,7 +58,7 @@ class MyApp extends StatelessWidget {
       ),
       darkTheme: ThemeData.dark(useMaterial3: true),
       themeMode: ThemeMode.dark,
-      home: const SignInPage(),
+      home: initialPage,
     );
   }
 }
