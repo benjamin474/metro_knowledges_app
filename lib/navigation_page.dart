@@ -98,10 +98,11 @@ class _NavigationPageState extends State<NavigationPage> {
           onRefresh: fetchQuoteOfTheDay,
           child: ListView(
             children: [
+              // 每日名言區塊 - 深色漸層底+白字
               Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.black87, Colors.black54],
+                    colors: [Color(0xFF232526), Color(0xFF414345)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -109,8 +110,10 @@ class _NavigationPageState extends State<NavigationPage> {
                 ),
                 margin: const EdgeInsets.all(16),
                 width: double.infinity,
-                height: 200, // Fixed height
+                height: 200,
                 child: InkWell(
+                  splashColor: Colors.tealAccent.withOpacity(0.3),
+                  highlightColor: Colors.blueAccent.withOpacity(0.15),
                   onTap: () async {
                     setState(() {
                       quote = '載入中...';
@@ -157,11 +160,11 @@ class _NavigationPageState extends State<NavigationPage> {
                   ),
                 ),
               ),
-              // 導覽功能區塊加上邊框與圓角
+              // 四大功能導覽 - 淡色漸層底+深色字
               Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.black87, Colors.black54],
+                    colors: [Color(0xFFB2FEFA), Color(0xFFE0C3FC)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -180,7 +183,7 @@ class _NavigationPageState extends State<NavigationPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                              icon: const Icon(Icons.article),
+                              icon: const Icon(Icons.article, color: Colors.black87),
                               tooltip: '新聞',
                               onPressed: () {
                                 Navigator.push(
@@ -188,7 +191,7 @@ class _NavigationPageState extends State<NavigationPage> {
                                     MaterialPageRoute(
                                         builder: (_) => const NewsPage()));
                               }),
-                          const Text('新聞'),
+                          const Text('新聞', style: TextStyle(color: Colors.black87)),
                         ],
                       ),
                     ),
@@ -201,7 +204,7 @@ class _NavigationPageState extends State<NavigationPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                              icon: const Icon(Icons.train),
+                              icon: const Icon(Icons.train, color: Colors.black87),
                               tooltip: '行車時長',
                               onPressed: () {
                                 Navigator.push(
@@ -211,7 +214,7 @@ class _NavigationPageState extends State<NavigationPage> {
                                             onToggleTheme: _toggleTheme,
                                             themeMode: _themeMode)));
                               }),
-                          const Text('行車時長'),
+                          const Text('行車時長', style: TextStyle(color: Colors.black87)),
                         ],
                       ),
                     ),
@@ -224,7 +227,7 @@ class _NavigationPageState extends State<NavigationPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                              icon: const Icon(Icons.attach_money),
+                              icon: const Icon(Icons.attach_money, color: Colors.black87),
                               tooltip: '票價距離',
                               onPressed: () {
                                 Navigator.push(
@@ -232,7 +235,7 @@ class _NavigationPageState extends State<NavigationPage> {
                                     MaterialPageRoute(
                                         builder: (_) => const FareDistancePage()));
                               }),
-                          const Text('票價距離'),
+                          const Text('票價距離', style: TextStyle(color: Colors.black87)),
                         ],
                       ),
                     ),
@@ -245,7 +248,7 @@ class _NavigationPageState extends State<NavigationPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                              icon: const Icon(Icons.directions_walk),
+                              icon: const Icon(Icons.directions_walk, color: Colors.black87),
                               tooltip: '步行排行',
                               onPressed: () {
                                 Navigator.push(
@@ -253,7 +256,7 @@ class _NavigationPageState extends State<NavigationPage> {
                                     MaterialPageRoute(
                                         builder: (_) => const TransferWalkingPage()));
                               }),
-                          const Text('步行排行'),
+                          const Text('步行排行', style: TextStyle(color: Colors.black87)),
                         ],
                       ),
                     ),
